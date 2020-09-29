@@ -10,7 +10,7 @@ If a player guesses the correct number a message is sent saying that the player 
 * ``/lottery <Number Guess>`` -- Play on the lottery 
 # Configuration
 
-The settings and options for this plugin can be configured in the ``ScrapLottery.json`` file under the ``oxide/config`` directory. The use of a JSON editor or validation site such as jsonlint.com is recommended to avoid formatting issues and syntax errors.
+The settings and options for this plugin can be configured in the ``ScrapLottery.json`` file under the ``oxide/config`` directory. The use of a JSON editor or validation site such as [jsonlint.com](https://jsonlint.com/) is recommended to avoid formatting issues and syntax errors.
 
 ``` json
 {
