@@ -9,6 +9,9 @@ If a player guesses the correct number a message is sent saying that the player 
 # Chat Commands
 * ``/lottery <Number Guess>`` -- Play on the lottery 
 # Configuration
+
+The settings and options for this plugin can be configured in the ``ScrapLottery.json`` file under the ``oxide/config`` directory. The use of a JSON editor or validation site such as jsonlint.com is recommended to avoid formatting issues and syntax errors.
+
 ``` json
 {
   "Lottery Rate (In Seconds)": 1800.0,
