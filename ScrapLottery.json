@@ -1,0 +1,8 @@
+{
+  "Lottery Rate (In Seconds)": 120,
+  "Lottery Duration (In Seconds)": 30.0,
+  "Min Number To Bet On": 1,
+  "Max Number To Bet On": 50,
+  "Scrap Needed To Bet": 10,
+  "Scrap Reward": 100
+}
