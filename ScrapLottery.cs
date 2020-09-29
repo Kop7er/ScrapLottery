@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Oxide.Plugins
 {
-    [Info("ScrapLottery", "Kopter", "1.0.0")]
+    [Info("Scrap Lottery", "Kopter", "1.0.1")]
     [Description("A plugin to gamble scrap in a lottery-style anywhere on the map using commands!")]
     public class ScrapLottery : RustPlugin
     {
@@ -102,6 +102,11 @@ namespace Oxide.Plugins
             }
         }
 
+        void Unload()
+        {
+            config = null;
+        }
+
         #endregion
 
         #region Config File
@@ -150,13 +155,7 @@ namespace Oxide.Plugins
                 return;
             }
 
-            ValidateConfig();
             SaveConfig();
-        }
-
-        private static void ValidateConfig()
-        {
-
         }
 
         protected override void LoadDefaultConfig()
