@@ -1,4 +1,5 @@
 {
+  "Permission Needed To Play": false
   "Lottery Rate (In Seconds)": 1800.0,
   "Lottery Duration (In Seconds)": 30.0,
   "Min Number To Bet On": 1,
