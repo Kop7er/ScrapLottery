@@ -34,6 +34,8 @@ The settings and options for this plugin can be configured in the ``ScrapLottery
 }
 ```
 # Default Values
+
+* Permission Needed To Play: **false**
 * Lottery Rate: **1800.0**
 * Lottery Lenght: **30.0**
 * Min Number To Bet On: **1**
