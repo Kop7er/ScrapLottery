@@ -13,6 +13,10 @@ This plugin provides both chat and console commands using the same syntax. When 
 
 * ``/lottery <Number Guess>`` -- Play on the lottery
 
+## Console
+
+* Coming Soon
+
 # Permissions
 This plugin uses Oxide's permission system. To assign a permission, use ``oxide.grant <user or group> <name or steam id> <permission>``. To remove a permission, use ``oxide.revoke <user or group> <name or steam id> <permission>``.
 
