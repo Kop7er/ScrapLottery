@@ -4,21 +4,26 @@ using UnityEngine;
 
 namespace Oxide.Plugins
 {
-    [Info("Scrap Lottery", "Kopter", "1.0.2")]
+    [Info("Scrap Lottery", "Kopter", "1.0.3")]
     [Description("A plugin to gamble scrap in a lottery-style anywhere on the map using commands!")]
     public class ScrapLottery : RustPlugin
     {
 
         int WinningNumber;
+        int ScrapID;
         bool LotteryRunning;
         List<ulong> GuessedPlayerIds = new List<ulong>();
 
         #region Hooks
         
-        void Loaded()
+        void Init()
         {
             permission.RegisterPermission("scraplottery.use", this);
+        }
 
+        void OnServerInitialized()
+        {
+            ScrapID = ItemManager.FindItemDefinition("scrap").itemid;
             timer.Every(config.LotteryRate, () =>
             {
                 StartLottery();
@@ -30,18 +35,16 @@ namespace Oxide.Plugins
         {
             LotteryRunning = true;
             WinningNumber = Random.Range(config.MinNumber, config.MaxNumber + 1);
-            PrintToChat(lang.GetMessage("LotteryStarted", this));
+            PrintToChat($"{Lang("LotteryStarted", null, config.MinNumber, config.MaxNumber)}");
             timer.Once(config.LotteryLength, () =>
             {
-          
                 if(LotteryRunning) LotteryExpired();
-
             });
         }
 
         void LotteryExpired()
         {
-            PrintToChat(lang.GetMessage("LotteryExpired", this) + WinningNumber);
+            PrintToChat($"{Lang("LotteryExpired", null)} {WinningNumber}");
             LotteryRunning = false;
             GuessedPlayerIds.Clear();
         }
@@ -49,27 +52,27 @@ namespace Oxide.Plugins
         [ChatCommand("lottery")]
         void LotteryCommand(BasePlayer player, string command, string[] args)
         {
-            if(config.PermissionNeeded && !(permission.UserHasPermission(player.userID.ToString(), "scraplottery.use")))
+            if(config.PermissionNeeded && !permission.UserHasPermission(player.UserIDString, "scraplottery.use"))
             {
-                player.ChatMessage(lang.GetMessage("NoPermission", this));
+                player.ChatMessage($"{Lang("NoPermission", player.UserIDString)}");
                 return;
             }
 
             if(!LotteryRunning)
             {
-                player.ChatMessage(lang.GetMessage("LotteryNotRunning", this));
+                player.ChatMessage($"{Lang("LotteryNotRunning", player.UserIDString)}");
                 return;
             }
 
             if(GuessedPlayerIds.Contains(player.userID))
             {
-                player.ChatMessage(lang.GetMessage("LotteryPlayed", this));
+                player.ChatMessage($"{Lang("LotteryPlayed", player.UserIDString)}");
                 return;
             }
 
             if(args.Length != 1)
             {
-                player.ChatMessage(lang.GetMessage("InvalidGuess", this));
+                player.ChatMessage($"{Lang("InvalidGuess", player.UserIDString)}");
                 return;
             }
 
@@ -77,42 +80,39 @@ namespace Oxide.Plugins
 
             if(!int.TryParse(args[0], out GuessedNumber))
             {
-                player.ChatMessage(lang.GetMessage("InvalidGuess", this));
+                player.ChatMessage($"{Lang("InvalidGuess", player.UserIDString)}");
                 return;
             }
 
-            if(player.inventory.GetAmount(ItemManager.FindItemDefinition("scrap").itemid) < config.ScrapNeeded)
+            if (player.inventory.GetAmount(ScrapID) < config.ScrapNeeded)
             {
-                player.ChatMessage(lang.GetMessage("NotEnoughScrap", this));
+                player.ChatMessage($"{Lang("NotEnoughScrap", player.UserIDString, config.ScrapNeeded)}");
                 return;
             }
 
             if(GuessedNumber > config.MaxNumber || GuessedNumber < config.MinNumber)
             {
-                player.ChatMessage(lang.GetMessage("OverMaxNumber", this));
+                player.ChatMessage($"{Lang("OverMaxNumber", player.UserIDString, config.MinNumber, config.MaxNumber)}");
                 return;
             }
 
-            player.inventory.Take(null, ItemManager.FindItemDefinition("scrap").itemid, config.ScrapNeeded);
+            player.inventory.Take(null, ScrapID, config.ScrapNeeded);
 
             if(LotteryRunning && GuessedNumber == WinningNumber)
             {
-                PrintToChat(player.displayName + lang.GetMessage("CorrectNumber", this) + WinningNumber);
-                player.inventory.GiveItem(ItemManager.CreateByName("scrap", config.ScrapReward, 0), player.inventory.containerMain);
+                PrintToChat($"{player.displayName} {Lang("CorrectNumber", player.UserIDString)} {WinningNumber}");
+                var reward = ItemManager.CreateByName("scrap", config.ScrapReward, 0);
+                if(reward == null) return;
+                player.inventory.GiveItem(reward, player.inventory.containerMain);
                 LotteryRunning = false;
                 GuessedPlayerIds.Clear();
             }
 
             else
             {
-                player.ChatMessage(lang.GetMessage("WrongNumber", this));
+                player.ChatMessage($"{Lang("WrongNumber", player.UserIDString)}");
                 GuessedPlayerIds.Add(player.userID);
             }
-        }
-
-        void Unload()
-        {
-            config = null;
         }
 
         #endregion
@@ -182,19 +182,24 @@ namespace Oxide.Plugins
         {
             lang.RegisterMessages(new Dictionary<string, string>
             {
-                {"LotteryStarted", "Lottery Time! Guess a number between " + config.MinNumber + " and " + config.MaxNumber + "! (Example: /lottery 8)"},
-                {"LotteryExpired", "The lottery is over! There were no winners, better luck next time! Correct anwser: "},
+                {"LotteryStarted", "Lottery Time! Guess a number between {0} and {1}! (Example: /lottery 8)"},
+                {"LotteryExpired", "The lottery is over! There were no winners, better luck next time! Correct anwser:"},
                 {"NoPermission", "You don't have permission to play!"},
                 {"LotteryNotRunning", "The lottery has not started yet!"},
                 {"LotteryPlayed", "You've already played, you can try again next lottery!"},
                 {"InvalidGuess", "Invalid guess! (Example: /lottery 8)"},
-                {"NotEnoughScrap", "You don't have enough scrap to play! Scrap needed: " + config.ScrapNeeded},
-                {"OverMaxNumber", "Guess a number between " + config.MinNumber + " and " + config.MaxNumber + "!"},
-                {"CorrectNumber", " has won the lottery! Correct anwser: "},
+                {"NotEnoughScrap", "You don't have enough scrap to play! Scrap needed: {0}"},
+                {"OverMaxNumber", "Guess a number between {0} and {1}!"},
+                {"CorrectNumber", "has won the lottery! Correct anwser:"},
                 {"WrongNumber", "You didn't win, you can try again next lottery!"}
 
             }, this);
         }
+
+        #endregion
+
+        #region Helpers
+            string Lang(string key, string id = null, params object[] args) => string.Format(lang.GetMessage(key, this, id), args);
 
         #endregion
     }
