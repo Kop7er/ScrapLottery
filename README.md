@@ -1,7 +1,7 @@
 # ScrapLottery
 A Rust plugin to gamble scrap in a lottery-style anywhere on the map using commands!
 
-You can download the plugin by clicking "Download Code", extrating the ZIP file and placing the file ``ScrapLottery.cs`` under ``oxide/plugins``, full info at [uMod](https://umod.org/documentation/plugins/installation),or at [uMod](https://umod.org/plugins/bN5MQYr510) (Awaiting approval)
+You can download the plugin by clicking "Download Code", extrating the ZIP file and placing the file ``ScrapLottery.cs`` under ``oxide/plugins``, full info at [uMod Plugin Installation Guide](https://umod.org/documentation/plugins/installation), or at [uMod](https://umod.org/plugins/) (Awaiting approval)
 
 A simple customizable lottery plugin, every X amount of time a message will be sent saying that the lottery has started and players can guess a number between 2 numbers, a player can guess only 1 time and needs to have a certain amount of scrap. \
 If a player guesses the correct number a message is sent saying that the player has won the lottery followed by the correct answer and the reward is given if no one guesses after a certain time a message is sent saying that the lottery is over and that no one won, followed by the correct answer.
