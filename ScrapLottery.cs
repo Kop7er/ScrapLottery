@@ -199,6 +199,7 @@ namespace Oxide.Plugins
         #endregion
 
         #region Helpers
+        
             string Lang(string key, string id = null, params object[] args) => string.Format(lang.GetMessage(key, this, id), args);
 
         #endregion
